@@ -1,41 +1,55 @@
 
 import React, { useState, useEffect } from "react";
-import { PhoneIncoming, Search, Clock, User } from "lucide-react";
+import { PhoneIncoming, Search, Clock, User, RefreshCw } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import CallsTable, { Call } from "@/components/ui/CallsTable";
 import CallDetails from "@/components/ui/CallDetails";
 import { fetchRetellCalls } from "@/services/retellService";
 import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 
 const Dashboard = () => {
   const [selectedCall, setSelectedCall] = useState<Call | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [calls, setCalls] = useState<Call[]>([]);
+  const [debugResponse, setDebugResponse] = useState("");
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const { toast } = useToast();
   
   // Fetch calls from Retell API
+  const loadCalls = async () => {
+    setIsLoading(true);
+    try {
+      const callsData = await fetchRetellCalls();
+      setCalls(callsData);
+      
+      // Store the response for debugging
+      setDebugResponse(JSON.stringify(callsData, null, 2));
+    } catch (error) {
+      console.error("Failed to load calls:", error);
+      setDebugResponse(`Error: ${error instanceof Error ? error.message : String(error)}`);
+      toast({
+        title: "Error loading calls",
+        description: "Could not fetch call data from the server",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+      setIsRefreshing(false);
+    }
+  };
+  
   useEffect(() => {
-    const loadCalls = async () => {
-      setIsLoading(true);
-      try {
-        const callsData = await fetchRetellCalls();
-        setCalls(callsData);
-      } catch (error) {
-        console.error("Failed to load calls:", error);
-        toast({
-          title: "Error loading calls",
-          description: "Could not fetch call data from the server",
-          variant: "destructive",
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
     loadCalls();
   }, [toast]);
+  
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+    loadCalls();
+  };
   
   const filteredCalls = searchTerm
     ? calls.filter(call => 
@@ -94,11 +108,21 @@ const Dashboard = () => {
       
       <main className="flex-grow pt-24 pb-12 px-4 md:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-2">Inbound Call Dashboard</h1>
-            <p className="text-muted-foreground">
-              Track and manage inbound calls from patients to pharmacists
-            </p>
+          <div className="mb-8 flex justify-between items-center">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">Inbound Call Dashboard</h1>
+              <p className="text-muted-foreground">
+                Track and manage inbound calls from patients to pharmacists
+              </p>
+            </div>
+            <Button 
+              onClick={handleRefresh} 
+              className="flex items-center gap-2"
+              disabled={isRefreshing}
+            >
+              <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+              {isRefreshing ? 'Refreshing...' : 'Refresh Calls'}
+            </Button>
           </div>
           
           {/* Stats */}
@@ -137,6 +161,16 @@ const Dashboard = () => {
             </div>
           </div>
           
+          {/* Debug Response Section */}
+          <div className="mb-6">
+            <h3 className="text-lg font-medium mb-2">Debug Response</h3>
+            <Textarea 
+              value={debugResponse} 
+              readOnly 
+              className="font-mono text-xs h-40" 
+            />
+          </div>
+          
           <div className="space-y-6">
             {selectedCall ? (
               <CallDetails 
@@ -152,13 +186,8 @@ const Dashboard = () => {
                   calls={filteredCalls} 
                   onSelectCall={setSelectedCall} 
                   className="glass-card p-4"
+                  isLoading={isLoading}
                 />
-                {isLoading && (
-                  <div className="text-center py-8">
-                    <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
-                    <p className="text-muted-foreground">Loading call data...</p>
-                  </div>
-                )}
               </>
             )}
           </div>
