@@ -40,7 +40,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <Link to="/" className="flex-shrink-0">
-              <h1 className="text-xl font-semibold text-primary">Refill Notifier Hub</h1>
+              <h1 className="text-xl font-semibold text-primary">Refill</h1>
             </Link>
           </div>
           

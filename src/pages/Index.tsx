@@ -19,7 +19,7 @@ const Index = () => {
                 Inbound Call Medication Verification
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
-                Refill Notifier Hub
+                Refill
               </h1>
               <p className="max-w-2xl mx-auto text-xl text-muted-foreground">
                 Streamlining Medicare medication verification for inbound calls.

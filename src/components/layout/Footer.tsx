@@ -10,7 +10,7 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-4 md:mb-0">
-            <h2 className="text-lg font-semibold text-primary">Refill Notifier Hub</h2>
+            <h2 className="text-lg font-semibold text-primary">Refill</h2>
             <p className="text-sm text-muted-foreground mt-1">
               Streamlining medication verification for inbound calls
             </p>
@@ -29,7 +29,7 @@ const Footer = () => {
               </a>
             </div>
             <p className="text-sm text-muted-foreground flex items-center">
-              Made with <Heart className="h-3 w-3 mx-1 text-destructive" /> &copy; {currentYear} Refill Notifier Hub
+              Made with <Heart className="h-3 w-3 mx-1 text-destructive" /> &copy; {currentYear} Refill
             </p>
           </div>
         </div>
