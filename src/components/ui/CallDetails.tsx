@@ -1,12 +1,11 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { format } from "date-fns";
-import { User, Clock, Calendar, MessageSquare, X } from "lucide-react";
+import { User, Clock, Calendar, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { type Call } from "./CallsTable";
 import CallCategoryBadge from "./CallCategoryBadge";
-import MedicationSearch from "./MedicationSearch";
 
 interface CallDetailsProps {
   call: Call;
@@ -15,6 +14,8 @@ interface CallDetailsProps {
 }
 
 const CallDetails = ({ call, onClose, className }: CallDetailsProps) => {
+  const [notes, setNotes] = useState(call.notes || "");
+  
   const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -22,11 +23,12 @@ const CallDetails = ({ call, onClose, className }: CallDetailsProps) => {
   };
 
   return (
-    <div className={cn("glass-card p-6 animate-fade-in", className)}>
-      <div className="flex justify-between items-start">
+    <div className={cn("bg-white rounded-xl shadow-lg p-6 animate-fade-in", className)}>
+      {/* Header with patient info and close button */}
+      <div className="flex justify-between items-start mb-6">
         <div className="flex items-center">
-          <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-            <User className="h-6 w-6 text-primary" />
+          <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
+            <User className="h-6 w-6 text-blue-500" />
           </div>
           <div className="ml-4">
             <h3 className="text-lg font-semibold">{call.patientName}</h3>
@@ -34,12 +36,13 @@ const CallDetails = ({ call, onClose, className }: CallDetailsProps) => {
           </div>
         </div>
         
-        <Button variant="ghost" size="icon" onClick={onClose}>
+        <Button variant="ghost" size="icon" onClick={onClose} className="mt-1">
           <X className="h-4 w-4" />
         </Button>
       </div>
       
-      <div className="mt-6 flex flex-wrap gap-4">
+      {/* Call details */}
+      <div className="flex flex-wrap gap-4 mb-6">
         <div className="flex items-center text-sm">
           <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
           <span>{format(call.timestamp, "MMMM d, yyyy h:mm a")}</span>
@@ -66,12 +69,13 @@ const CallDetails = ({ call, onClose, className }: CallDetailsProps) => {
         </div>
       </div>
       
+      {/* Medications Discussed */}
       {call.medications && call.medications.length > 0 && (
-        <div className="mt-6">
-          <h4 className="font-medium mb-2">Medications Discussed</h4>
+        <div className="mb-6">
+          <h4 className="font-medium mb-3">Medications Discussed</h4>
           <div className="flex flex-wrap gap-2">
             {call.medications.map((med, idx) => (
-              <span key={idx} className="pill bg-accent text-accent-foreground">
+              <span key={idx} className="pill bg-blue-100 text-blue-800 px-3 py-1">
                 {med}
               </span>
             ))}
@@ -79,23 +83,73 @@ const CallDetails = ({ call, onClose, className }: CallDetailsProps) => {
         </div>
       )}
       
-      <div className="mt-6">
-        <h4 className="font-medium mb-2">Medication Verification</h4>
-        <div className="p-4 rounded-lg bg-accent/50">
-          <MedicationSearch />
+      {/* Medication Verification - Show coverage info directly */}
+      {call.medications && call.medications.length > 0 && (
+        <div className="mb-6">
+          <h4 className="font-medium mb-3">Medication Verification</h4>
+          <div className="space-y-3">
+            {call.medications.map((med, idx) => {
+              // Simulating coverage info - in a real app, this would come from an API
+              const isCovered = idx % 2 === 0; // Mock logic for demo
+              return (
+                <div key={idx} className="p-3 rounded-lg border bg-white">
+                  <div className="flex justify-between">
+                    <div>
+                      <p className="font-medium">{med}</p>
+                      <p className="text-sm text-muted-foreground">Standard dosage</p>
+                    </div>
+                    <div className={cn(
+                      "pill self-start",
+                      isCovered ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                    )}>
+                      {isCovered ? "Covered" : "Not Covered"}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
       
-      <div className="mt-6">
-        <h4 className="font-medium mb-2">Call Notes</h4>
+      {/* Call Notes */}
+      <div className="mb-6">
+        <h4 className="font-medium mb-3">Call Notes</h4>
         <textarea 
           className="w-full min-h-[100px] p-3 border border-input rounded-md" 
           placeholder="Enter call notes here..."
-          defaultValue={call.notes}
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
         />
       </div>
       
-      <div className="mt-6 flex justify-end space-x-3">
+      {/* Call Transcript */}
+      <div className="mb-6">
+        <h4 className="font-medium mb-3">Complete Transcript</h4>
+        <div className="border rounded-md p-4 max-h-60 overflow-y-auto bg-gray-50">
+          <div className="space-y-4">
+            <div className="flex gap-3">
+              <div className="font-medium text-blue-600 min-w-20">Agent:</div>
+              <div>Hello, thank you for calling. How can I help you today?</div>
+            </div>
+            <div className="flex gap-3">
+              <div className="font-medium text-gray-700 min-w-20">Patient:</div>
+              <div>Hi, I had a question about my Atorvastatin prescription. I've been experiencing some muscle pain and I'm wondering if it could be a side effect.</div>
+            </div>
+            <div className="flex gap-3">
+              <div className="font-medium text-blue-600 min-w-20">Agent:</div>
+              <div>I understand your concern. Muscle pain can indeed be a side effect of Atorvastatin. How long have you been taking this medication?</div>
+            </div>
+            <div className="flex gap-3">
+              <div className="font-medium text-gray-700 min-w-20">Patient:</div>
+              <div>About three weeks now. The muscle pain started a few days ago.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Action buttons */}
+      <div className="flex justify-end space-x-3">
         <Button variant="outline">Cancel</Button>
         <Button>Save Changes</Button>
       </div>
