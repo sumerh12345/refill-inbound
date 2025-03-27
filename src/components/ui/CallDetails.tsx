@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { type Call } from "./CallsTable";
 import CallCategoryBadge from "./CallCategoryBadge";
+import { ScrollArea } from "./scroll-area";
 
 interface CallDetailsProps {
   call: Call;
@@ -140,25 +141,67 @@ const CallDetails = ({ call, onClose, className }: CallDetailsProps) => {
       {/* Call Transcript */}
       <div className="mb-6">
         <h4 className="font-medium mb-3">Complete Transcript</h4>
-        <div className="border rounded-md p-4 max-h-60 overflow-y-auto bg-gray-50">
-          <div className="space-y-4">
-            <div className="flex gap-3">
-              <div className="font-medium text-blue-600 min-w-20">Agent:</div>
-              <div>Hello, thank you for calling. How can I help you today?</div>
+        <div className="border rounded-md bg-gray-50">
+          <ScrollArea className="h-60 rounded-md">
+            <div className="p-4 space-y-4">
+              <div className="flex gap-3">
+                <div className="font-medium text-blue-600 min-w-20">Agent:</div>
+                <div>Hello, thank you for calling. How can I help you today?</div>
+              </div>
+              <div className="flex gap-3">
+                <div className="font-medium text-gray-700 min-w-20">Patient:</div>
+                <div>Hi, I had a question about my Atorvastatin prescription. I've been experiencing some muscle pain and I'm wondering if it could be a side effect.</div>
+              </div>
+              <div className="flex gap-3">
+                <div className="font-medium text-blue-600 min-w-20">Agent:</div>
+                <div>I understand your concern. Muscle pain can indeed be a side effect of Atorvastatin. How long have you been taking this medication?</div>
+              </div>
+              <div className="flex gap-3">
+                <div className="font-medium text-gray-700 min-w-20">Patient:</div>
+                <div>About three weeks now. The muscle pain started a few days ago.</div>
+              </div>
+              <div className="flex gap-3">
+                <div className="font-medium text-blue-600 min-w-20">Agent:</div>
+                <div>Thank you for that information. Have you noticed any other symptoms besides the muscle pain?</div>
+              </div>
+              <div className="flex gap-3">
+                <div className="font-medium text-gray-700 min-w-20">Patient:</div>
+                <div>No, just the muscle pain. It's mostly in my legs and sometimes in my shoulders.</div>
+              </div>
+              <div className="flex gap-3">
+                <div className="font-medium text-blue-600 min-w-20">Agent:</div>
+                <div>I see. I'd recommend scheduling an appointment with your doctor to discuss these symptoms, as they should be evaluated. Muscle pain can be a common side effect, but it's important to have it checked. Would you like me to check if your doctor has any available appointments soon?</div>
+              </div>
+              <div className="flex gap-3">
+                <div className="font-medium text-gray-700 min-w-20">Patient:</div>
+                <div>Yes, that would be helpful. Should I continue taking the medication in the meantime?</div>
+              </div>
+              <div className="flex gap-3">
+                <div className="font-medium text-blue-600 min-w-20">Agent:</div>
+                <div>I can't provide medical advice on whether to continue or stop your medication. That decision should come from your doctor. But I would suggest calling your doctor's office today if the pain is severe. Let me also check your insurance coverage for Atorvastatin while we're on the call.</div>
+              </div>
+              <div className="flex gap-3">
+                <div className="font-medium text-gray-700 min-w-20">Patient:</div>
+                <div>Thank you. I also wanted to ask about Lisinopril, my doctor mentioned adding it to my regimen. Is that covered by my insurance?</div>
+              </div>
+              <div className="flex gap-3">
+                <div className="font-medium text-blue-600 min-w-20">Agent:</div>
+                <div>Let me check that for you right away. I can see that Atorvastatin is covered under your plan, but let me verify the coverage status for Lisinopril.</div>
+              </div>
+              <div className="flex gap-3">
+                <div className="font-medium text-gray-700 min-w-20">Patient:</div>
+                <div>Great, thank you for checking.</div>
+              </div>
+              <div className="flex gap-3">
+                <div className="font-medium text-blue-600 min-w-20">Agent:</div>
+                <div>I've checked your benefits, and I can see that Lisinopril is not covered under your current plan. However, there might be alternative medications in the same class that are covered. Would you like me to provide some information about those alternatives that you can discuss with your doctor?</div>
+              </div>
+              <div className="flex gap-3">
+                <div className="font-medium text-gray-700 min-w-20">Patient:</div>
+                <div>Yes, that would be very helpful. I'll discuss alternatives with my doctor.</div>
+              </div>
             </div>
-            <div className="flex gap-3">
-              <div className="font-medium text-gray-700 min-w-20">Patient:</div>
-              <div>Hi, I had a question about my Atorvastatin prescription. I've been experiencing some muscle pain and I'm wondering if it could be a side effect.</div>
-            </div>
-            <div className="flex gap-3">
-              <div className="font-medium text-blue-600 min-w-20">Agent:</div>
-              <div>I understand your concern. Muscle pain can indeed be a side effect of Atorvastatin. How long have you been taking this medication?</div>
-            </div>
-            <div className="flex gap-3">
-              <div className="font-medium text-gray-700 min-w-20">Patient:</div>
-              <div>About three weeks now. The muscle pain started a few days ago.</div>
-            </div>
-          </div>
+          </ScrollArea>
         </div>
       </div>
       
