@@ -1,4 +1,3 @@
-
 import React from "react";
 import { User, Calendar, Phone, Mail, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -14,11 +13,12 @@ interface PatientCardProps {
     medicareEligible?: boolean;
   };
   className?: string;
+  style?: React.CSSProperties;
 }
 
-const PatientCard = ({ patient, className }: PatientCardProps) => {
+const PatientCard = ({ patient, className, style }: PatientCardProps) => {
   return (
-    <div className={cn("glass-card-hover p-6 animate-fade-in", className)}>
+    <div className={cn("glass-card-hover p-6 animate-fade-in", className)} style={style}>
       <div className="flex items-start justify-between">
         <div className="flex items-center">
           <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">

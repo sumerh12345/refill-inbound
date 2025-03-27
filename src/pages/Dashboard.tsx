@@ -1,25 +1,29 @@
 
 import React, { useState } from "react";
-import { PhoneIncoming, Search, Clock, User, ChevronRight } from "lucide-react";
+import { PhoneIncoming, Search, Clock, User } from "lucide-react";
 import { format } from "date-fns";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import MedicationSearch from "@/components/ui/MedicationSearch";
-import CallLog from "@/components/ui/CallLog";
+import CallsTable, { Call } from "@/components/ui/CallsTable";
+import CallDetails from "@/components/ui/CallDetails";
+import { Button } from "@/components/ui/button";
 
 const Dashboard = () => {
-  const [activeCallData, setActiveCallData] = useState<any>(null);
+  const [selectedCall, setSelectedCall] = useState<Call | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
   
   // Mock data for demo purposes
-  const recentCalls = [
+  const recentCalls: Call[] = [
     {
       id: "call1",
       patientName: "John Smith",
       patientId: "P12345",
       timestamp: new Date(Date.now() - 15 * 60 * 1000), // 15 minutes ago
       duration: 325, // 5 minutes 25 seconds
+      category: "medication-question",
       medications: ["Atorvastatin", "Lisinopril"],
-      status: "completed" as const
+      notes: "Patient had questions about potential side effects of Atorvastatin.",
+      status: "completed"
     },
     {
       id: "call2",
@@ -27,8 +31,10 @@ const Dashboard = () => {
       patientId: "P23456",
       timestamp: new Date(Date.now() - 45 * 60 * 1000), // 45 minutes ago
       duration: 187, // 3 minutes 7 seconds
+      category: "new-prescription",
       medications: ["Metformin"],
-      status: "completed" as const
+      notes: "Patient requested a new prescription for Metformin.",
+      status: "needs-followup"
     },
     {
       id: "call3",
@@ -36,8 +42,9 @@ const Dashboard = () => {
       patientId: "P34567",
       timestamp: new Date(Date.now() - 120 * 60 * 1000), // 2 hours ago
       duration: 412, // 6 minutes 52 seconds
+      category: "insurance-inquiry",
       medications: ["Omeprazole", "Azithromycin"],
-      status: "completed" as const
+      status: "completed"
     },
     {
       id: "call4",
@@ -45,14 +52,18 @@ const Dashboard = () => {
       patientId: "P45678",
       timestamp: new Date(Date.now() - 5000), // Just now
       duration: 85, // 1 minute 25 seconds so far
-      status: "in-progress" as const
+      category: "side-effects",
+      status: "in-progress"
     }
   ];
   
-  const handleActiveCall = (call: any) => {
-    setActiveCallData(call);
-  };
-  
+  const filteredCalls = searchTerm
+    ? recentCalls.filter(call => 
+        call.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        call.patientId.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : recentCalls;
+    
   const stats = [
     { 
       label: "Today's Calls",
@@ -91,9 +102,9 @@ const Dashboard = () => {
       <main className="flex-grow pt-24 pb-12 px-4 md:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-2">Call Dashboard</h1>
+            <h1 className="text-3xl font-bold mb-2">Inbound Call Dashboard</h1>
             <p className="text-muted-foreground">
-              Monitor incoming calls and verify medications in real-time
+              Track and manage inbound calls from patients to pharmacists
             </p>
           </div>
           
@@ -117,82 +128,44 @@ const Dashboard = () => {
             ))}
           </div>
           
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Active Call Section */}
-            <div className="glass-card p-6 lg:col-span-2 animate-fade-in">
-              <h2 className="section-heading mb-4">
-                {activeCallData ? "Active Call" : "Start a New Call"}
-              </h2>
-              
-              {activeCallData ? (
-                <div className="space-y-6">
-                  <div className="flex items-center space-x-4">
-                    <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-                      <PhoneIncoming className="h-6 w-6 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold">{activeCallData.patientName}</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Started {format(activeCallData.timestamp, "h:mm a")} · 
-                        Patient ID: {activeCallData.patientId}
-                      </p>
-                    </div>
-                    
-                    <div className="ml-auto">
-                      <div className="pill bg-blue-100 text-blue-800">
-                        {activeCallData.status === "in-progress" ? "In Progress" : "Completed"}
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="p-4 rounded-lg bg-accent/50">
-                    <h4 className="font-medium mb-2">Medication Verification</h4>
-                    <MedicationSearch />
-                  </div>
-                  
-                  <div className="flex justify-between">
-                    <button 
-                      onClick={() => setActiveCallData(null)}
-                      className="px-4 py-2 rounded-md border border-input bg-background hover:bg-accent transition-colors"
-                    >
-                      End Call
-                    </button>
-                    
-                    <button 
-                      className="px-4 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-                    >
-                      Save Notes
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className="space-y-6">
-                  <p className="text-muted-foreground">
-                    When you receive an inbound call, select it from the recent calls list or create a new call.
-                  </p>
-                  
-                  <div className="p-4 rounded-lg bg-accent/50">
-                    <h4 className="font-medium mb-2">Quick Medication Lookup</h4>
-                    <MedicationSearch />
-                  </div>
-                  
-                  <button 
-                    className="w-full px-4 py-3 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-                    onClick={() => handleActiveCall(recentCalls[3])}
-                  >
-                    Start New Call
-                  </button>
-                </div>
-              )}
-            </div>
-            
-            {/* Recent Calls */}
-            <div className="animate-fade-in" style={{ animationDelay: "100ms" }}>
-              <CallLog 
-                calls={recentCalls} 
-                onSelectCall={handleActiveCall}
+          {/* Search and Filters */}
+          <div className="mb-6">
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <Search className="h-4 w-4 text-muted-foreground" />
+              </div>
+              <input
+                type="text"
+                className="search-input pl-10 w-full lg:w-1/3"
+                placeholder="Search by patient name or ID..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
+          </div>
+          
+          <div className="space-y-6">
+            {selectedCall ? (
+              <CallDetails 
+                call={selectedCall} 
+                onClose={() => setSelectedCall(null)}
+              />
+            ) : (
+              <>
+                <div className="flex justify-between mb-4">
+                  <h2 className="text-xl font-semibold">Recent Inbound Calls</h2>
+                  <Button>
+                    <PhoneIncoming className="h-4 w-4 mr-2" />
+                    New Call
+                  </Button>
+                </div>
+                <CallsTable 
+                  calls={filteredCalls} 
+                  onSelectCall={setSelectedCall} 
+                  className="glass-card p-4"
+                />
+              </>
+            )}
           </div>
         </div>
       </main>
