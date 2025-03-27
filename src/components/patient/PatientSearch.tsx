@@ -58,9 +58,15 @@ const PatientSearch = ({
             <DropdownMenuLabel>Filter by Medicare Status</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuRadioGroup value={filterValue} onValueChange={(value) => onFilterChange(value as FilterOption)}>
-              <DropdownMenuRadioItem value="all">All Patients</DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="medicare">Medicare Eligible</DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="non-medicare">Not Medicare Eligible</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="all" className="relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-4 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
+                All Patients
+              </DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="medicare" className="relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-4 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
+                Medicare Eligible
+              </DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="non-medicare" className="relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-4 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
+                Not Medicare Eligible
+              </DropdownMenuRadioItem>
             </DropdownMenuRadioGroup>
           </DropdownMenuContent>
         </DropdownMenu>
