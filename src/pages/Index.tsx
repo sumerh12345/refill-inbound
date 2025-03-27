@@ -33,13 +33,6 @@ const Index = () => {
                   <PhoneCall className="mr-2 h-5 w-5" />
                   Call Dashboard
                 </Link>
-                <Link
-                  to="/medication"
-                  className="inline-flex items-center justify-center rounded-lg bg-secondary px-5 py-3 text-base font-medium text-secondary-foreground transition-colors hover:bg-secondary/90"
-                >
-                  <Search className="mr-2 h-5 w-5" />
-                  Medication Lookup
-                </Link>
               </div>
             </div>
           </div>
