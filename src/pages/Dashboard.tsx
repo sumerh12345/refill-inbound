@@ -6,7 +6,6 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import CallsTable, { Call } from "@/components/ui/CallsTable";
 import CallDetails from "@/components/ui/CallDetails";
-import { Button } from "@/components/ui/button";
 
 const Dashboard = () => {
   const [selectedCall, setSelectedCall] = useState<Call | null>(null);
@@ -18,7 +17,7 @@ const Dashboard = () => {
       id: "call1",
       patientName: "John Smith",
       patientId: "P12345",
-      timestamp: new Date(Date.now() - 15 * 60 * 1000), // 15 minutes ago
+      timestamp: new Date(2025, 2, 26, 9, 25), // Mar 26, 2025, 9:25 PM
       duration: 325, // 5 minutes 25 seconds
       category: "medication-question",
       medications: ["Atorvastatin", "Lisinopril"],
@@ -29,7 +28,7 @@ const Dashboard = () => {
       id: "call2",
       patientName: "Emma Johnson",
       patientId: "P23456",
-      timestamp: new Date(Date.now() - 45 * 60 * 1000), // 45 minutes ago
+      timestamp: new Date(2025, 2, 26, 8, 55), // Mar 26, 2025, 8:55 PM
       duration: 187, // 3 minutes 7 seconds
       category: "new-prescription",
       medications: ["Metformin"],
@@ -40,7 +39,7 @@ const Dashboard = () => {
       id: "call3",
       patientName: "Michael Brown",
       patientId: "P34567",
-      timestamp: new Date(Date.now() - 120 * 60 * 1000), // 2 hours ago
+      timestamp: new Date(2025, 2, 26, 7, 40), // Mar 26, 2025, 7:40 PM
       duration: 412, // 6 minutes 52 seconds
       category: "insurance-inquiry",
       medications: ["Omeprazole", "Azithromycin"],
@@ -50,10 +49,46 @@ const Dashboard = () => {
       id: "call4",
       patientName: "Sarah Davis",
       patientId: "P45678",
-      timestamp: new Date(Date.now() - 5000), // Just now
-      duration: 85, // 1 minute 25 seconds so far
+      timestamp: new Date(2025, 2, 26, 9, 40), // Mar 26, 2025, 9:40 PM
+      duration: 85, // 1 minute 25 seconds
       category: "side-effects",
       status: "in-progress"
+    },
+    {
+      id: "call5",
+      patientName: "David Wilson",
+      patientId: "P56789",
+      timestamp: new Date(2025, 2, 26, 6, 15), // Mar 26, 2025, 6:15 PM
+      duration: 275, // 4 minutes 35 seconds
+      category: "medication-question",
+      status: "completed"
+    },
+    {
+      id: "call6",
+      patientName: "Jennifer Taylor",
+      patientId: "P67890",
+      timestamp: new Date(2025, 2, 26, 5, 30), // Mar 26, 2025, 5:30 PM
+      duration: 198, // 3 minutes 18 seconds
+      category: "insurance-inquiry",
+      status: "needs-followup"
+    },
+    {
+      id: "call7",
+      patientName: "Robert Miller",
+      patientId: "P78901",
+      timestamp: new Date(2025, 2, 26, 4, 45), // Mar 26, 2025, 4:45 PM
+      duration: 356, // 5 minutes 56 seconds
+      category: "new-prescription",
+      status: "completed"
+    },
+    {
+      id: "call8",
+      patientName: "Lisa Anderson",
+      patientId: "P89012",
+      timestamp: new Date(2025, 2, 26, 3, 20), // Mar 26, 2025, 3:20 PM
+      duration: 167, // 2 minutes 47 seconds
+      category: "side-effects",
+      status: "needs-followup"
     }
   ];
   
@@ -152,12 +187,8 @@ const Dashboard = () => {
               />
             ) : (
               <>
-                <div className="flex justify-between mb-4">
+                <div className="mb-4">
                   <h2 className="text-xl font-semibold">Recent Inbound Calls</h2>
-                  <Button>
-                    <PhoneIncoming className="h-4 w-4 mr-2" />
-                    New Call
-                  </Button>
                 </div>
                 <CallsTable 
                   calls={filteredCalls} 

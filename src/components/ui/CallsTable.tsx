@@ -1,9 +1,8 @@
 
 import React from "react";
 import { format } from "date-fns";
-import { Phone, Clock } from "lucide-react";
+import { Clock } from "lucide-react";
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import CallCategoryBadge, { CallCategory } from "./CallCategoryBadge";
 
@@ -42,19 +41,22 @@ const CallsTable = ({ calls, onSelectCall, className }: CallsTableProps) => {
             <TableHead>Duration</TableHead>
             <TableHead>Reason</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead>Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {calls.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={6} className="text-center py-6">
+              <TableCell colSpan={5} className="text-center py-6">
                 No calls recorded
               </TableCell>
             </TableRow>
           ) : (
             calls.map((call) => (
-              <TableRow key={call.id} className="animate-fade-in">
+              <TableRow 
+                key={call.id} 
+                className="animate-fade-in cursor-pointer hover:bg-accent/50"
+                onClick={() => onSelectCall && onSelectCall(call)}
+              >
                 <TableCell>
                   <div>
                     <p className="font-medium">{call.patientName}</p>
@@ -87,16 +89,6 @@ const CallsTable = ({ calls, onSelectCall, className }: CallsTableProps) => {
                      call.status === "in-progress" ? "In Progress" : 
                      "Needs Follow-up"}
                   </span>
-                </TableCell>
-                <TableCell>
-                  <Button 
-                    size="sm" 
-                    variant="outline"
-                    onClick={() => onSelectCall && onSelectCall(call)}
-                  >
-                    <Phone className="h-3.5 w-3.5 mr-1" />
-                    Details
-                  </Button>
                 </TableCell>
               </TableRow>
             ))
