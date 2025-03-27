@@ -1,129 +1,87 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { PhoneIncoming, Search, Clock, User } from "lucide-react";
-import { format } from "date-fns";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import CallsTable, { Call } from "@/components/ui/CallsTable";
 import CallDetails from "@/components/ui/CallDetails";
+import { fetchRetellCalls } from "@/services/retellService";
+import { useToast } from "@/hooks/use-toast";
 
 const Dashboard = () => {
   const [selectedCall, setSelectedCall] = useState<Call | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [calls, setCalls] = useState<Call[]>([]);
+  const { toast } = useToast();
   
-  // Mock data for demo purposes
-  const recentCalls: Call[] = [
-    {
-      id: "call1",
-      patientName: "John Smith",
-      patientId: "P12345",
-      timestamp: new Date(2025, 2, 26, 9, 25), // Mar 26, 2025, 9:25 PM
-      duration: 325, // 5 minutes 25 seconds
-      category: "medication-question",
-      medications: ["Atorvastatin", "Lisinopril"],
-      notes: "Patient had questions about potential side effects of Atorvastatin.",
-      status: "completed"
-    },
-    {
-      id: "call2",
-      patientName: "Emma Johnson",
-      patientId: "P23456",
-      timestamp: new Date(2025, 2, 26, 8, 55), // Mar 26, 2025, 8:55 PM
-      duration: 187, // 3 minutes 7 seconds
-      category: "new-prescription",
-      medications: ["Metformin"],
-      notes: "Patient requested a new prescription for Metformin.",
-      status: "needs-followup"
-    },
-    {
-      id: "call3",
-      patientName: "Michael Brown",
-      patientId: "P34567",
-      timestamp: new Date(2025, 2, 26, 7, 40), // Mar 26, 2025, 7:40 PM
-      duration: 412, // 6 minutes 52 seconds
-      category: "insurance-inquiry",
-      medications: ["Omeprazole", "Azithromycin"],
-      status: "completed"
-    },
-    {
-      id: "call4",
-      patientName: "Sarah Davis",
-      patientId: "P45678",
-      timestamp: new Date(2025, 2, 26, 9, 40), // Mar 26, 2025, 9:40 PM
-      duration: 85, // 1 minute 25 seconds
-      category: "side-effects",
-      status: "in-progress"
-    },
-    {
-      id: "call5",
-      patientName: "David Wilson",
-      patientId: "P56789",
-      timestamp: new Date(2025, 2, 26, 6, 15), // Mar 26, 2025, 6:15 PM
-      duration: 275, // 4 minutes 35 seconds
-      category: "medication-question",
-      status: "completed"
-    },
-    {
-      id: "call6",
-      patientName: "Jennifer Taylor",
-      patientId: "P67890",
-      timestamp: new Date(2025, 2, 26, 5, 30), // Mar 26, 2025, 5:30 PM
-      duration: 198, // 3 minutes 18 seconds
-      category: "insurance-inquiry",
-      status: "needs-followup"
-    },
-    {
-      id: "call7",
-      patientName: "Robert Miller",
-      patientId: "P78901",
-      timestamp: new Date(2025, 2, 26, 4, 45), // Mar 26, 2025, 4:45 PM
-      duration: 356, // 5 minutes 56 seconds
-      category: "new-prescription",
-      status: "completed"
-    },
-    {
-      id: "call8",
-      patientName: "Lisa Anderson",
-      patientId: "P89012",
-      timestamp: new Date(2025, 2, 26, 3, 20), // Mar 26, 2025, 3:20 PM
-      duration: 167, // 2 minutes 47 seconds
-      category: "side-effects",
-      status: "needs-followup"
-    }
-  ];
+  // Fetch calls from Retell API
+  useEffect(() => {
+    const loadCalls = async () => {
+      setIsLoading(true);
+      try {
+        const callsData = await fetchRetellCalls();
+        setCalls(callsData);
+      } catch (error) {
+        console.error("Failed to load calls:", error);
+        toast({
+          title: "Error loading calls",
+          description: "Could not fetch call data from the server",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    loadCalls();
+  }, [toast]);
   
   const filteredCalls = searchTerm
-    ? recentCalls.filter(call => 
+    ? calls.filter(call => 
         call.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         call.patientId.toLowerCase().includes(searchTerm.toLowerCase())
       )
-    : recentCalls;
+    : calls;
     
   const stats = [
     { 
       label: "Today's Calls",
-      value: 24,
+      value: calls.filter(call => {
+        const today = new Date();
+        const callDate = new Date(call.timestamp);
+        return callDate.getDate() === today.getDate() &&
+               callDate.getMonth() === today.getMonth() &&
+               callDate.getFullYear() === today.getFullYear();
+      }).length,
       icon: <PhoneIncoming className="h-5 w-5 text-blue-500" />,
       change: "+12%",
       isPositive: true
     },
     { 
       label: "Avg. Call Time",
-      value: "4:15",
+      value: (() => {
+        if (calls.length === 0) return "0:00";
+        const totalSeconds = calls.reduce((sum, call) => sum + call.duration, 0);
+        const avgSeconds = Math.floor(totalSeconds / calls.length);
+        const mins = Math.floor(avgSeconds / 60);
+        const secs = avgSeconds % 60;
+        return `${mins}:${secs.toString().padStart(2, "0")}`;
+      })(),
       icon: <Clock className="h-5 w-5 text-purple-500" />,
       change: "-0:30",
       isPositive: true
     },
     { 
       label: "Medications Verified",
-      value: 48,
+      value: calls.reduce((count, call) => count + (call.medications?.length || 0), 0),
       icon: <Search className="h-5 w-5 text-green-500" />,
       change: "+18%",
       isPositive: true
     },
     { 
       label: "Active Patients",
-      value: 156,
+      value: [...new Set(calls.map(call => call.patientId))].length,
       icon: <User className="h-5 w-5 text-amber-500" />,
       change: "+8",
       isPositive: true
@@ -195,6 +153,12 @@ const Dashboard = () => {
                   onSelectCall={setSelectedCall} 
                   className="glass-card p-4"
                 />
+                {isLoading && (
+                  <div className="text-center py-8">
+                    <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+                    <p className="text-muted-foreground">Loading call data...</p>
+                  </div>
+                )}
               </>
             )}
           </div>

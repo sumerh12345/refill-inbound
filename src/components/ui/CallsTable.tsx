@@ -1,7 +1,7 @@
 
 import React from "react";
 import { format } from "date-fns";
-import { Clock } from "lucide-react";
+import { Clock, ShieldAlert } from "lucide-react";
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import CallCategoryBadge, { CallCategory } from "./CallCategoryBadge";
@@ -22,14 +22,44 @@ interface CallsTableProps {
   calls: Call[];
   onSelectCall?: (call: Call) => void;
   className?: string;
+  isLoading?: boolean;
 }
 
-const CallsTable = ({ calls, onSelectCall, className }: CallsTableProps) => {
+const CallsTable = ({ calls, onSelectCall, className, isLoading = false }: CallsTableProps) => {
   const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
+
+  if (isLoading) {
+    return (
+      <div className={cn("animate-pulse", className)}>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Patient</TableHead>
+              <TableHead>Time</TableHead>
+              <TableHead>Duration</TableHead>
+              <TableHead>Reason</TableHead>
+              <TableHead>Status</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {Array.from({ length: 5 }).map((_, index) => (
+              <TableRow key={index}>
+                <TableCell><div className="h-6 w-48 bg-gray-200 rounded"></div></TableCell>
+                <TableCell><div className="h-6 w-24 bg-gray-200 rounded"></div></TableCell>
+                <TableCell><div className="h-6 w-16 bg-gray-200 rounded"></div></TableCell>
+                <TableCell><div className="h-6 w-32 bg-gray-200 rounded"></div></TableCell>
+                <TableCell><div className="h-6 w-24 bg-gray-200 rounded"></div></TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    );
+  }
 
   return (
     <div className={className}>
@@ -46,8 +76,12 @@ const CallsTable = ({ calls, onSelectCall, className }: CallsTableProps) => {
         <TableBody>
           {calls.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={5} className="text-center py-6">
-                No calls recorded
+              <TableCell colSpan={5} className="text-center py-8">
+                <div className="flex flex-col items-center">
+                  <ShieldAlert className="h-10 w-10 text-muted-foreground mb-2" />
+                  <p className="text-muted-foreground">No calls recorded</p>
+                  <p className="text-sm text-muted-foreground mt-1">Call data will appear here once available</p>
+                </div>
               </TableCell>
             </TableRow>
           ) : (
