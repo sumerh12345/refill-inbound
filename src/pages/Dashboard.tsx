@@ -38,7 +38,7 @@ const Dashboard = () => {
         toast({
           title: "Using mock data",
           description: "Could not connect to Retell API. Using mock data instead.",
-          variant: "warning",
+          variant: "destructive"
         });
       } else {
         toast({
