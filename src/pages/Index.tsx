@@ -1,6 +1,5 @@
 
 import React from "react";
-import { Link } from "react-router-dom";
 import { PhoneCall, Search, User, CheckCircle, ArrowRight } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -25,15 +24,6 @@ const Index = () => {
                 Streamlining Medicare medication verification for inbound calls.
                 Quick, accurate, and efficient.
               </p>
-              <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
-                <Link
-                  to="/dashboard"
-                  className="inline-flex items-center justify-center rounded-lg bg-primary px-5 py-3 text-base font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-                >
-                  <PhoneCall className="mr-2 h-5 w-5" />
-                  Call Dashboard
-                </Link>
-              </div>
             </div>
           </div>
         </section>
@@ -137,13 +127,6 @@ const Index = () => {
                     Get started with our dashboard to efficiently manage inbound calls and verify Medicare coverage.
                   </p>
                 </div>
-                <Link
-                  to="/dashboard"
-                  className="inline-flex items-center justify-center whitespace-nowrap rounded-lg bg-primary px-6 py-3 text-base font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-                >
-                  <CheckCircle className="mr-2 h-5 w-5" />
-                  Get Started
-                </Link>
               </div>
             </div>
           </div>
