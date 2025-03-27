@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { Phone, Clock } from "lucide-react";
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import CallCategoryBadge, { CallCategory } from "./CallCategoryBadge";
 
 export interface Call {
