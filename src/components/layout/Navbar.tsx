@@ -22,6 +22,11 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Add useEffect to scroll to top when location changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   const navLinks = [
     { name: "Home", path: "/", icon: <Home className="h-4 w-4 mr-2" /> },
     { name: "Dashboard", path: "/dashboard", icon: <PhoneCall className="h-4 w-4 mr-2" /> },
