@@ -4,22 +4,31 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import PatientList, { Patient } from "@/components/patient/PatientList";
 import PatientDetail from "@/components/patient/PatientDetail";
-import PatientSearch from "@/components/patient/PatientSearch";
+import PatientSearch, { FilterOption } from "@/components/patient/PatientSearch";
 import { patientData } from "@/data/patientData";
 import { callHistory } from "@/data/callData";
 
 const PatientInfo = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [filterValue, setFilterValue] = useState<FilterOption>("all");
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   
-  // Filter patients based on search term
-  const filteredPatients = searchTerm 
-    ? patientData.filter(patient => 
-        patient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        patient.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        patient.email.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : patientData;
+  // Filter patients based on search term and filter value
+  const filteredPatients = patientData.filter(patient => {
+    // First apply the search filter
+    const matchesSearch = !searchTerm || 
+      patient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      patient.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      patient.email.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    // Then apply the Medicare filter
+    const matchesMedicare = 
+      filterValue === "all" || 
+      (filterValue === "medicare" && patient.medicareEligible) ||
+      (filterValue === "non-medicare" && !patient.medicareEligible);
+    
+    return matchesSearch && matchesMedicare;
+  });
 
   // Get calls for selected patient
   const patientCalls = selectedPatient
@@ -28,6 +37,10 @@ const PatientInfo = () => {
 
   const handleSearchChange = (value: string) => {
     setSearchTerm(value);
+  };
+
+  const handleFilterChange = (value: FilterOption) => {
+    setFilterValue(value);
   };
 
   const handleSelectPatient = (patient: Patient) => {
@@ -56,6 +69,8 @@ const PatientInfo = () => {
             <PatientSearch
               searchTerm={searchTerm}
               onSearchChange={handleSearchChange}
+              filterValue={filterValue}
+              onFilterChange={handleFilterChange}
             />
           )}
           

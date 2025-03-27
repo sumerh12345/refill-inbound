@@ -1,13 +1,31 @@
 
 import React from "react";
 import { Search, Plus, Filter, Download } from "lucide-react";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuRadioGroup, 
+  DropdownMenuRadioItem, 
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator
+} from "@/components/ui/dropdown-menu";
+
+export type FilterOption = "all" | "medicare" | "non-medicare";
 
 interface PatientSearchProps {
   searchTerm: string;
   onSearchChange: (searchTerm: string) => void;
+  filterValue: FilterOption;
+  onFilterChange: (value: FilterOption) => void;
 }
 
-const PatientSearch = ({ searchTerm, onSearchChange }: PatientSearchProps) => {
+const PatientSearch = ({ 
+  searchTerm, 
+  onSearchChange, 
+  filterValue, 
+  onFilterChange 
+}: PatientSearchProps) => {
   return (
     <div className="flex flex-col md:flex-row gap-4 mb-8">
       <div className="relative flex-grow">
@@ -28,10 +46,25 @@ const PatientSearch = ({ searchTerm, onSearchChange }: PatientSearchProps) => {
           <Plus className="h-4 w-4 mr-2" />
           Add Patient
         </button>
-        <button className="inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium border border-input bg-background hover:bg-accent transition-colors">
-          <Filter className="h-4 w-4 mr-2" />
-          Filter
-        </button>
+        
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium border border-input bg-background hover:bg-accent transition-colors">
+              <Filter className="h-4 w-4 mr-2" />
+              Filter
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuLabel>Filter by Medicare Status</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuRadioGroup value={filterValue} onValueChange={(value) => onFilterChange(value as FilterOption)}>
+              <DropdownMenuRadioItem value="all">All Patients</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="medicare">Medicare Eligible</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="non-medicare">Not Medicare Eligible</DropdownMenuRadioItem>
+            </DropdownMenuRadioGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        
         <button className="inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium border border-input bg-background hover:bg-accent transition-colors">
           <Download className="h-4 w-4 mr-2" />
           Export
