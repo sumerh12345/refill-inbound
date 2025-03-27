@@ -1,3 +1,4 @@
+
 import { Call } from "@/components/ui/CallsTable";
 import { CallCategory } from "@/components/ui/CallCategoryBadge";
 
@@ -68,7 +69,9 @@ const generateMockCalls = (count: number): Call[] => {
 // Fetch calls from Retell API
 export const fetchRetellCalls = async (): Promise<Call[]> => {
   try {
-    const response = await fetch(`${RETELL_API_URL}/v1/agents/${RETELL_AGENT_ID}/calls`, {
+    // Updated endpoint based on the 404 error in the console logs
+    // The endpoint structure may need to be /v1/calls?agent_id=agent_id instead
+    const response = await fetch(`${RETELL_API_URL}/v1/calls?agent_id=${RETELL_AGENT_ID}`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${RETELL_API_KEY}`,
@@ -77,13 +80,16 @@ export const fetchRetellCalls = async (): Promise<Call[]> => {
     });
 
     if (!response.ok) {
-      // If API returns an error, generate mock data for development
       console.error(`Failed to fetch calls: ${response.status}`);
+      if (response.status === 404) {
+        console.error("API endpoint not found. Check the Retell API documentation for the correct endpoint.");
+      }
       console.log("Generating mock data for development");
       return generateMockCalls(10);
     }
 
     const data: RetellCallResponse = await response.json();
+    console.log("API Response:", data); // Log the actual API response for debugging
     
     // Map Retell calls to our Call interface
     return data.calls.map(call => ({

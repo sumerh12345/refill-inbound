@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { PhoneIncoming, Search, Clock, User, RefreshCw } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
@@ -26,8 +25,28 @@ const Dashboard = () => {
       const callsData = await fetchRetellCalls();
       setCalls(callsData);
       
-      // Store the response for debugging
-      setDebugResponse(JSON.stringify(callsData, null, 2));
+      // Store the response for debugging with more detailed information
+      const isMockData = callsData.some(call => call.id.startsWith('mock-'));
+      setDebugResponse(
+        `Data Source: ${isMockData ? 'MOCK DATA' : 'API RESPONSE'}\n` +
+        `Timestamp: ${new Date().toISOString()}\n` +
+        `Call Count: ${callsData.length}\n\n` +
+        JSON.stringify(callsData, null, 2)
+      );
+      
+      if (isMockData) {
+        toast({
+          title: "Using mock data",
+          description: "Could not connect to Retell API. Using mock data instead.",
+          variant: "warning",
+        });
+      } else {
+        toast({
+          title: "Data loaded",
+          description: "Successfully fetched call data from Retell API.",
+          variant: "default",
+        });
+      }
     } catch (error) {
       console.error("Failed to load calls:", error);
       setDebugResponse(`Error: ${error instanceof Error ? error.message : String(error)}`);
@@ -44,7 +63,7 @@ const Dashboard = () => {
   
   useEffect(() => {
     loadCalls();
-  }, [toast]);
+  }, []);
   
   const handleRefresh = () => {
     setIsRefreshing(true);
@@ -163,7 +182,7 @@ const Dashboard = () => {
           
           {/* Debug Response Section */}
           <div className="mb-6">
-            <h3 className="text-lg font-medium mb-2">Debug Response</h3>
+            <h3 className="text-lg font-medium mb-2">Debug Response {calls.some(call => call.id.startsWith('mock-')) ? "(Using Mock Data)" : "(Live API Data)"}</h3>
             <Textarea 
               value={debugResponse} 
               readOnly 
