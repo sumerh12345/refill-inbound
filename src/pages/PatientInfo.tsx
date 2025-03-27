@@ -1,10 +1,10 @@
-
 import React, { useState } from "react";
 import { Search, Plus, Filter, Download } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import PatientCard from "@/components/ui/PatientCard";
 import CallsTable, { Call } from "@/components/ui/CallsTable";
+import { CallCategory } from "@/components/ui/CallCategoryBadge";
 
 // Mock patient data
 const patientData = [
@@ -146,7 +146,7 @@ const patientData = [
 ];
 
 // Mock call data - calls linked to patients
-const callHistory = [
+const callHistory: Call[] = [
   {
     id: "call1",
     patientId: "P12345",
