@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { format } from "date-fns";
-import { User, Clock, Calendar, X } from "lucide-react";
+import { User, Clock, Calendar, X, Headphones, Play, Pause } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { type Call } from "./CallsTable";
@@ -15,11 +15,18 @@ interface CallDetailsProps {
 
 const CallDetails = ({ call, onClose, className }: CallDetailsProps) => {
   const [notes, setNotes] = useState(call.notes || "");
+  const [isPlaying, setIsPlaying] = useState(false);
   
   const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  // Toggle audio playback
+  const togglePlayback = () => {
+    setIsPlaying(!isPlaying);
+    // In a real implementation, this would control the actual audio playback
   };
 
   return (
@@ -69,19 +76,26 @@ const CallDetails = ({ call, onClose, className }: CallDetailsProps) => {
         </div>
       </div>
       
-      {/* Medications Discussed */}
-      {call.medications && call.medications.length > 0 && (
-        <div className="mb-6">
-          <h4 className="font-medium mb-3">Medications Discussed</h4>
-          <div className="flex flex-wrap gap-2">
-            {call.medications.map((med, idx) => (
-              <span key={idx} className="pill bg-blue-100 text-blue-800 px-3 py-1">
-                {med}
-              </span>
-            ))}
+      {/* Audio Recording Player */}
+      <div className="mb-6">
+        <h4 className="font-medium mb-3">Call Recording</h4>
+        <div className="bg-gray-50 border rounded-lg p-4 flex items-center justify-between">
+          <div className="flex items-center">
+            <Headphones className="h-5 w-5 text-blue-600 mr-3" />
+            <div>
+              <p className="font-medium">Call Audio Recording</p>
+              <p className="text-sm text-muted-foreground">{formatDuration(call.duration)}</p>
+            </div>
           </div>
+          <Button 
+            onClick={togglePlayback} 
+            variant="outline" 
+            className="rounded-full h-10 w-10 p-0 flex items-center justify-center"
+          >
+            {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+          </Button>
         </div>
-      )}
+      </div>
       
       {/* Medication Verification - Show coverage info directly */}
       {call.medications && call.medications.length > 0 && (
