@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, PhoneCall, User, Search, Home } from "lucide-react";
+import { Menu, X, PhoneCall, User, Home } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const Navbar = () => {
@@ -31,7 +30,6 @@ const Navbar = () => {
     { name: "Home", path: "/", icon: <Home className="h-4 w-4 mr-2" /> },
     { name: "Dashboard", path: "/dashboard", icon: <PhoneCall className="h-4 w-4 mr-2" /> },
     { name: "Patient Info", path: "/patient", icon: <User className="h-4 w-4 mr-2" /> },
-    { name: "Medication Lookup", path: "/medication", icon: <Search className="h-4 w-4 mr-2" /> },
   ];
 
   return (
