@@ -1,8 +1,10 @@
 
 import React from "react";
-import { PhoneCall, Search, User, CheckCircle, ArrowRight } from "lucide-react";
+import { PhoneCall, Search, User, ArrowRight } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   return (
@@ -10,20 +12,25 @@ const Index = () => {
       <Navbar />
       
       <main className="flex-grow flex flex-col">
-        {/* Hero Section */}
+        {/* Hero Section - Modified to reduce repetition */}
         <section className="pt-32 pb-20 px-4 md:px-8">
           <div className="max-w-7xl mx-auto">
             <div className="text-center space-y-6 animate-fade-in">
-              <div className="inline-block pill bg-accent text-accent-foreground font-medium mb-2">
+              <div className="inline-block pill bg-accent text-accent-foreground font-medium mb-4 px-4 py-2 rounded-full">
                 Inbound Call Medication Verification
               </div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
-                Refill
-              </h1>
-              <p className="max-w-2xl mx-auto text-xl text-muted-foreground">
+              <p className="max-w-2xl mx-auto text-xl text-muted-foreground mb-6">
                 Streamlining Medicare medication verification for inbound calls.
                 Quick, accurate, and efficient.
               </p>
+              <div className="flex justify-center gap-4">
+                <Button asChild size="lg" className="gap-2">
+                  <Link to="/patient">
+                    <User className="h-5 w-5" />
+                    Patient Info
+                  </Link>
+                </Button>
+              </div>
             </div>
           </div>
         </section>
@@ -32,8 +39,8 @@ const Index = () => {
         <section className="py-16 px-4 md:px-8 bg-accent">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="section-heading mb-4">Key Features</h2>
-              <p className="subheading max-w-2xl mx-auto">
+              <h2 className="text-3xl font-bold mb-4">Key Features</h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                 Designed to make your Medicare medication verification process smooth and efficient
               </p>
             </div>
@@ -72,8 +79,8 @@ const Index = () => {
         <section className="py-16 px-4 md:px-8">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="section-heading mb-4">How It Works</h2>
-              <p className="subheading max-w-2xl mx-auto">
+              <h2 className="text-3xl font-bold mb-4">How It Works</h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                 A simple three-step process to verify medication coverage
               </p>
             </div>
@@ -127,6 +134,11 @@ const Index = () => {
                     Get started with our dashboard to efficiently manage inbound calls and verify Medicare coverage.
                   </p>
                 </div>
+                <Button asChild size="lg">
+                  <Link to="/patient">
+                    Get Started
+                  </Link>
+                </Button>
               </div>
             </div>
           </div>
