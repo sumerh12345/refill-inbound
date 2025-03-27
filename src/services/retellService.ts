@@ -7,21 +7,20 @@ const RETELL_API_KEY = "key_c96f71c4b1304dcf92468c69b1b8";
 const RETELL_AGENT_ID = "agent_21813ad7d3c29c8031ab85a6d7";
 const RETELL_API_URL = "https://api.retellai.com";
 
-interface RetellCallResponse {
-  calls: RetellCall[];
-  // Other fields from API response as needed
-}
-
+// Updated interface to match the actual API response structure
 interface RetellCall {
-  id: string;
+  call_id: string;
   patient_name?: string;
   patient_id?: string;
-  created_at: string;
-  duration_seconds?: number;
+  start_timestamp: number;
+  end_timestamp?: number;
+  duration_ms?: number;
   call_type?: string;
+  call_status?: string;
+  agent_id: string;
   medications?: string[];
   notes?: string;
-  status?: string;
+  transcript?: string;
   // Add other fields as they appear in the API response
 }
 
@@ -41,8 +40,8 @@ const mapCallCategory = (callType: string | undefined): CallCategory => {
 const mapCallStatus = (status: string | undefined): "completed" | "in-progress" | "needs-followup" => {
   if (!status) return "completed";
   
-  if (status.includes("complete")) return "completed";
-  if (status.includes("progress") || status.includes("ongoing")) return "in-progress";
+  if (status === "ended" || status.includes("complete")) return "completed";
+  if (status === "in_progress" || status.includes("ongoing")) return "in-progress";
   if (status.includes("follow") || status.includes("pending")) return "needs-followup";
   
   return "completed";
@@ -92,20 +91,21 @@ export const fetchRetellCalls = async (): Promise<Call[]> => {
       return generateMockCalls(10);
     }
 
-    const data: RetellCallResponse = await response.json();
+    // The API response is an array directly, not wrapped in a 'calls' property
+    const data: RetellCall[] = await response.json();
     console.log("API Response:", data); // Log the actual API response for debugging
     
     // Map Retell calls to our Call interface
-    return data.calls.map(call => ({
-      id: call.id,
+    return data.map(call => ({
+      id: call.call_id,
       patientName: call.patient_name || "Unknown Patient",
       patientId: call.patient_id || `P${Math.floor(Math.random() * 100000)}`,
-      timestamp: new Date(call.created_at),
-      duration: call.duration_seconds || 0,
+      timestamp: new Date(call.start_timestamp), // Convert timestamp to Date
+      duration: call.duration_ms ? Math.floor(call.duration_ms / 1000) : 0, // Convert ms to seconds
       category: mapCallCategory(call.call_type),
       medications: call.medications || [],
-      notes: call.notes || "",
-      status: mapCallStatus(call.status)
+      notes: call.notes || (call.transcript ? "Transcript available" : ""),
+      status: mapCallStatus(call.call_status)
     }));
   } catch (error) {
     console.error("Error fetching Retell calls:", error);
